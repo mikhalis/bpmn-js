@@ -283,6 +283,46 @@ describe('modeling/behavior - AdaptiveLabelPositioningBehavior', function() {
 
     });
 
+
+    describe('on copy/paste onto a flow', function() {
+
+      it('should not crash', inject(function(elementRegistry, modeling, copyPaste) {
+
+        // given
+        var target1 = elementRegistry.get('SequenceFlow_1qmllcx'),
+            target2 = elementRegistry.get('SequenceFlow_022at7e'),
+            source1 = elementRegistry.get('IntermediateThrowEvent'),
+            source2 = elementRegistry.get('IntermediateThrowEvent2'),
+            task = elementRegistry.get('Task'),
+            pastePoint1 = {
+              x: task.x + task.width / 2,
+              y: task.y - 36
+            },
+            pastePoint2 = {
+              x: target2.waypoints[1].x - 50,
+              y: target2.waypoints[1].y
+            },
+            allTargets = [ target1, target2 ],
+            allSources = [ source1, source2 ],
+            allPastePoints = [ pastePoint1, pastePoint2 ];
+
+        allSources.forEach(function(source, index) {
+          var target = allTargets[ index ];
+          var pastePoint = allPastePoints[ index ];
+
+          copyPaste.copy(source);
+
+          // when
+          copyPaste.paste({
+            element: target,
+            point: pastePoint
+          })[0];
+
+          // then
+          // Expect not to throw an exception
+        });
+      }));
+    });
   });
 
 
